@@ -1,3 +1,5 @@
+
+BRUTE FORCE
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& arr, int target) {
@@ -22,3 +24,88 @@ public:
         return vector<vector<int>>(stt.begin(),stt.end());
     }
 };
+
+
+
+
+
+BETTER APPROACH 
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& arr, int target) {
+set<vector<int>> st;
+        int n = arr.size();
+        for(int i =0; i<n; i++){
+            for(int j = i+1; j<n; j++){
+                unordered_map<long long,int> mpp;
+
+                for(int k = j+1; k<n; k++){
+                    long long sum = arr[i];
+                    sum+=arr[j];
+                    sum+=arr[k];
+                    long long req = target -(sum);
+                    if(mpp.find(req)!=mpp.end()){
+                        vector<int> temp = {arr[i],arr[j],arr[k],(int)req};
+                        sort(temp.begin(),temp.end());
+                        st.insert(temp);
+                    }
+                    mpp[arr[k]]++;
+                }
+            }
+        }
+    return vector<vector<int>>(st.begin(),st.end());
+    }
+};
+
+
+
+
+
+
+OPTIMAL APPROACH
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& arr, int target) {
+        int n = arr.size();
+        vector<vector<int>> ans;
+        sort(arr.begin(),arr.end());
+        for(int i = 0; i<n; i++){
+            if(i>0 && arr[i]==arr[i-1]) continue;
+            for(int j =i+1; j<n; j++){
+                            if(j>i+1 && arr[j]==arr[j-1]) continue;
+
+                int l = j+1;
+                int r = n-1;
+                while(l<r){
+                long long sum = arr[i];
+                sum+= arr[j];
+                sum+= arr[l];
+                sum+= arr[r];
+                if(sum<target){
+l++;
+
+                }
+                else if(sum>target){
+                    r--;
+                }
+                else if(sum==target){
+                    ans.push_back({arr[i],arr[j],arr[l],arr[r]});
+                    l++;
+                    r--;
+                    while(l<r && arr[l]==arr[l-1]){
+                        l++;
+                    }
+                    while(l<r && arr[r]==arr[r+1]){
+                        r--;
+                    }
+                }
+            }
+        }
+    }
+    return ans;
+    }
+};
+
+
+
+
