@@ -3,27 +3,40 @@ BRUTE FORCE
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& arr, int target) {
-        set<vector<int>> stt;
+        set<vector<int>> stt; // 🔑 duplicates avoid karne ke liye set
         int n = arr.size();
+
+        // 🔴 CORE LOGIC:
+        // 4 nested loops → har possible quadruple try karo
         for(int i =0; i<n; i++){
             for(int j = i+1; j<n; j++){
                 for(int k = j+1; k<n; k++){
                     for(int l = k+1; l<n; l++){
+
                         int sum = arr[i]+arr[j];
                         sum += arr[k];
                         sum += arr[l];
+
                         if(sum==target){
-                        vector<int> temp = {arr[i],arr[j],arr[k],arr[l]};
-                        sort(temp.begin(),temp.end());
-                        stt.insert(temp);
+                            vector<int> temp = {arr[i],arr[j],arr[k],arr[l]};
+                            
+                            // 🔑 IMPORTANT: sort before inserting
+                            // warna [1,2,3,4] aur [2,1,3,4] alag treat honge
+                            sort(temp.begin(),temp.end());
+
+                            stt.insert(temp); // duplicates auto remove
                         }
                     }
                 }
             }
         }
+
+        // 🔁 set → vector conversion
         return vector<vector<int>>(stt.begin(),stt.end());
     }
 };
+
+
 
 
 
@@ -33,29 +46,45 @@ BETTER APPROACH
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& arr, int target) {
-set<vector<int>> st;
+        set<vector<int>> st; // 🔑 duplicates avoid
         int n = arr.size();
+
+        // 🔴 CORE LOGIC:
+        // 2 loops fix karo (i, j)
+        // baaki 2Sum ko hashmap se solve karo
         for(int i =0; i<n; i++){
             for(int j = i+1; j<n; j++){
-                unordered_map<long long,int> mpp;
+
+                unordered_map<long long,int> mpp; 
+                // 🔑 seen elements store karega
 
                 for(int k = j+1; k<n; k++){
+
                     long long sum = arr[i];
                     sum+=arr[j];
                     sum+=arr[k];
-                    long long req = target -(sum);
+
+                    long long req = target -(sum); // 🔑 fourth element
+
+                    // 🔍 check if required element already seen
                     if(mpp.find(req)!=mpp.end()){
+
                         vector<int> temp = {arr[i],arr[j],arr[k],(int)req};
-                        sort(temp.begin(),temp.end());
+                        sort(temp.begin(),temp.end()); // 🔑 normalize
+
                         st.insert(temp);
                     }
+
+                    // 🔑 mark current element as seen
                     mpp[arr[k]]++;
                 }
             }
         }
-    return vector<vector<int>>(st.begin(),st.end());
+
+        return vector<vector<int>>(st.begin(),st.end());
     }
 };
+
 
 
 
@@ -68,44 +97,61 @@ public:
     vector<vector<int>> fourSum(vector<int>& arr, int target) {
         int n = arr.size();
         vector<vector<int>> ans;
-        sort(arr.begin(),arr.end());
+
+        sort(arr.begin(),arr.end()); // 🔑 MUST for two-pointer + duplicates
+
+        // 🔴 CORE LOGIC:
+        // i, j fix karo → baaki 2Sum with two pointers
         for(int i = 0; i<n; i++){
+
+            // 🔑 skip duplicate i
             if(i>0 && arr[i]==arr[i-1]) continue;
+
             for(int j =i+1; j<n; j++){
-                            if(j>i+1 && arr[j]==arr[j-1]) continue;
+
+                // 🔑 skip duplicate j (same i ke andar)
+                if(j>i+1 && arr[j]==arr[j-1]) continue;
 
                 int l = j+1;
                 int r = n-1;
-                while(l<r){
-                long long sum = arr[i];
-                sum+= arr[j];
-                sum+= arr[l];
-                sum+= arr[r];
-                if(sum<target){
-l++;
 
-                }
-                else if(sum>target){
-                    r--;
-                }
-                else if(sum==target){
-                    ans.push_back({arr[i],arr[j],arr[l],arr[r]});
-                    l++;
-                    r--;
-                    while(l<r && arr[l]==arr[l-1]){
-                        l++;
+                // 🔁 two pointer
+                while(l<r){
+
+                    long long sum = arr[i];
+                    sum+= arr[j];
+                    sum+= arr[l];
+                    sum+= arr[r];
+
+                    if(sum<target){
+                        l++; // 🔑 bada sum chahiye
                     }
-                    while(l<r && arr[r]==arr[r+1]){
+                    else if(sum>target){
+                        r--; // 🔑 chhota sum chahiye
+                    }
+                    else{
+
+                        // ✅ valid quadruple
+                        ans.push_back({arr[i],arr[j],arr[l],arr[r]});
+
+                        l++;
                         r--;
+
+                        // 🔑 duplicate skip (pointer level)
+                        while(l<r && arr[l]==arr[l-1]){
+                            l++;
+                        }
+                        while(l<r && arr[r]==arr[r+1]){
+                            r--;
+                        }
                     }
                 }
             }
         }
-    }
-    return ans;
+
+        return ans;
     }
 };
-
 
 
 
