@@ -1,0 +1,68 @@
+BRUTE/BETTER
+
+class Solution {
+  public:
+    long subarrayXor(vector<int> &arr, int k) {
+        long count = 0; // stores number of subarrays with XOR = k
+        int n = arr.size(); // size of array
+
+        // outer loop: starting index of subarray
+        for(int i = 0; i < n; i++) {
+            int xorr = 0; // initialize XOR for each new starting point
+
+            // inner loop: ending index of subarray
+            for(int j = i; j < n; j++) {
+
+                // compute XOR from index i to j
+                xorr = xorr ^ arr[j];
+
+                // check if current subarray XOR equals k
+                if(xorr == k) {
+                    count++; // increment count if condition satisfied
+                }
+            }
+        }
+
+        // return total count of valid subarrays
+        return count;
+    }
+};
+
+
+OPTIMAL
+class Solution {
+  public:
+    long subarrayXor(vector<int> &arr, int k) {
+        long count = 0; // stores number of subarrays with XOR = k
+        
+        map<int,int> mpp; // stores frequency of prefix XORs
+        int n = arr.size();
+        int xr = 0; // prefix XOR
+
+        // iterate through array
+        for(int i = 0; i < n; i++) {
+            
+            // update prefix XOR till index i
+            xr = xr ^ arr[i];
+
+            // if prefix XOR itself equals k
+            if(xr == k) {
+                count++;
+            }
+
+            // find required XOR to form k
+            int x = xr ^ k;
+
+            // if this XOR was seen before, add its frequency
+            if(mpp.find(x) != mpp.end()) {
+                count += mpp[x];
+            }
+
+            // store/update current prefix XOR in map
+            mpp[xr]++;
+        }
+
+        // return total count of valid subarrays
+        return count;  
+    }
+};
