@@ -62,3 +62,43 @@ public:
         return {repeating, missing};
     }
 };
+Optimal Math Approach - Find Missing & Repeating Number (O(n) / O(1))
+class Solution {
+  public:
+    vector<int> findTwoElement(vector<int>& arr) {
+        long long n = arr.size();
+        vector<int> ans;
+
+        long long sum1 = n*(n+1)/2; // expected sum of 1..n
+        long long x=0;
+        long long y=0;
+
+        long long sum2 = (n*(n+1)*(2*n+1))/6; // expected sum of squares
+
+        long long sum3 = 0; // actual sum
+        long long sum4 = 0; // actual sum of squares
+
+        for(int i = 0; i<n; i++){
+            sum3 += arr[i]; // accumulate actual sum
+            sum4 += (long long)arr[i]*(long long)arr[i]; // accumulate square sum (avoid overflow)
+        }
+
+        long long diff = sum1 - sum3; // x - y (repeating - missing)
+        long long sdiff = (sum2 - sum4); // x^2 - y^2
+
+        // Using:
+        // x - y = diff
+        // x + y = (x^2 - y^2) / (x - y) = sdiff / diff
+
+        x = (sum1 - sum3 + (sum2 - sum4)/(sum1 - sum3)) / 2; 
+        // x = ( (x - y) + (x + y) ) / 2
+
+        y = ((sum2 - sum4)/(sum1 - sum3) - (sum1 - sum3)) / 2; 
+        // y = ( (x + y) - (x - y) ) / 2
+
+        ans.push_back(y); // missing element
+        ans.push_back(x); // repeating element
+
+        return ans;
+    }
+};
