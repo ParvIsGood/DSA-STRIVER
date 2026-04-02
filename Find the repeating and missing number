@@ -1,0 +1,64 @@
+BRUTE 
+class Solution {
+public:
+    vector<int> findTwoElement(vector<int>& arr) {
+        int n = arr.size();
+        int missing = -1;
+        int repeating = -1;
+
+        // Check each number from 1 to n
+        for (int i = 1; i <= n; i++) {
+            int count = 0;
+
+            // Count occurrences
+            for (int j = 0; j < n; j++) {
+                if (arr[j] == i) {
+                    count++;
+                }
+            }
+
+            if (count == 2) {
+                repeating = i;
+            } 
+            else if (count == 0) {
+                missing = i;
+            }
+
+            if (repeating != -1 && missing != -1) {
+                break;
+            }
+        }
+
+        return {repeating, missing};
+    }
+};
+
+
+BETTER 
+class Solution {
+public:
+    vector<int> findTwoElement(vector<int>& arr) {
+        int n = arr.size();
+        unordered_map<int, int> freq;
+
+        int missing = -1;
+        int repeating = -1;
+
+        // Build frequency map
+        for (int i = 0; i < n; i++) {
+            freq[arr[i]]++;
+        }
+
+        // Identify missing and repeating
+        for (int i = 1; i <= n; i++) {
+            if (freq.find(i) == freq.end()) {
+                missing = i;
+            } 
+            else if (freq[i] == 2) {
+                repeating = i;
+            }
+        }
+
+        return {repeating, missing};
+    }
+};
