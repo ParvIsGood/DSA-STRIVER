@@ -1,0 +1,26 @@
+recursive solotuion 
+class Solution {
+public:
+int lmh(vector<int> &arr,int l, int h, int target){
+    if(l>h){
+        return -1;
+    }
+    int m = (l+h)/2;
+    if(arr[m]==target){
+        return m;
+    }
+    else if(arr[m]>target){
+       return lmh(arr,l,m-1,target);
+    }
+    else {
+       return lmh(arr,m+1,h,target);
+    }
+    return -1;
+}
+    int search(vector<int>& arr, int target) {
+                int n = arr.size();
+
+      return  lmh(arr,0,n-1,target);
+         
+    }
+};
