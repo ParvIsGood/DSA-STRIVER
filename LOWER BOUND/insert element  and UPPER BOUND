@@ -1,4 +1,4 @@
-lower bound
+lower bound/insert element 
 class Solution {
   public:
     int lowerBound(vector<int>& arr, int target) {
