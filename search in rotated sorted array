@@ -1,0 +1,84 @@
+No Duplicates (Return Index)
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int search(vector<int>& arr, int target) {
+        int low = 0;
+        int high = arr.size() - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            // Target found
+            if (arr[mid] == target) return mid;
+
+            // Left half is sorted
+            if (arr[mid] >= arr[low]) {
+                if (target >= arr[low] && target <= arr[mid]) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            }
+            // Right half is sorted
+            else {
+                if (target >= arr[mid] && target <= arr[high]) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+        }
+
+        return -1; // Target not found
+    }
+};
+
+
+With Duplicates (Return Boolean)
+
+ #include <vector>
+using namespace std;
+
+class Solution {
+public:
+    bool search(vector<int>& arr, int target) {
+        int low = 0;
+        int high = arr.size() - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            // Target found
+            if (arr[mid] == target) return true;
+
+            // Handle duplicates (edge case)
+            if (arr[low] == arr[mid] && arr[mid] == arr[high]) {
+                low++;
+                high--;
+                continue;
+            }
+
+            // Left half is sorted
+            if (arr[mid] >= arr[low]) {
+                if (target >= arr[low] && target <= arr[mid]) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            }
+            // Right half is sorted
+            else {
+                if (target >= arr[mid] && target <= arr[high]) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+        }
+
+        return false; // Target not found
+    }
+};
