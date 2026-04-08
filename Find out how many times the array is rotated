@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int findKRotation(vector<int> &arr) {
+        int n = arr.size();
+        int low = 0;
+        int high = n - 1;
+
+        int mini = INT_MAX; // stores minimum value found
+        int ans = 0;        // stores index of minimum (rotation count)
+
+        while (low <= high) {
+            int m = (low + high) / 2;
+
+            // Left half is sorted
+            if (arr[low] <= arr[m]) {
+                // Check if current left is smallest
+                if (arr[low] < mini) {
+                    mini = arr[low];
+                    ans = low;
+                }
+                // Move to right half
+                low = m + 1;
+            }
+            // Right half is sorted (pivot in left half)
+            else {
+                // Check mid element
+                if (arr[m] < mini) {
+                    mini = arr[m];
+                    ans = m;
+                }
+                // Move to left half
+                high = m - 1;
+            }
+        }
+
+        return ans; // index of minimum element = number of rotations
+    }
+};
