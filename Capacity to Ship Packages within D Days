@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int shipWithinDays(vector<int>& weights, int days) {
+        int n = weights.size();
+        int sum = 0;
+        int ans = 0;
+
+        // "calculate total weight"
+        for (int i = 0; i < n; i++) {
+            sum += weights[i];
+        }
+
+        // "minimum capacity = max element, maximum = total sum"
+        int low = *max_element(weights.begin(), weights.end());
+        int high = sum;
+
+        // "binary search on capacity"
+        while (low <= high) {
+
+            int m = (low + high) / 2;
+
+            int s = 0;
+            int day = 1;
+
+            // "simulate number of days needed with capacity m"
+            for (int i = 0; i < n; i++) {
+                s += weights[i];
+
+                // "if capacity exceeded → shift to next day"
+                if (s > m) {
+                    s = weights[i];
+                    day++;
+                }
+            }
+
+            // "if possible within given days"
+            if (day <= days) {
+                ans = m;
+                high = m - 1;   // "try smaller capacity"
+            } else {
+                low = m + 1;    // "increase capacity"
+            }
+        }
+
+        // "minimum valid capacity"
+        return ans;
+    }
+};
