@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int n = arr.size();
+
+        // Binary search range
+        int low = 0;
+        int high = n - 1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+
+            // Calculate how many numbers are missing till index mid
+            // Expected value at index mid = mid + 1
+            int missing = arr[mid] - (mid + 1);
+
+            // If missing numbers are less than k, move right
+            if (missing < k) {
+                low = mid + 1;
+            } 
+            // Otherwise move left
+            else {
+                high = mid - 1;
+            }
+        }
+
+        // Final answer: kth missing number
+        return low + k;
+    }
+};
