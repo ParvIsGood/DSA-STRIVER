@@ -1,0 +1,33 @@
+long long studentcheck(vector<long long>& arr, int m){
+    int student = 0;
+    int count = 1;
+    int n = arr.size();
+    for(int i = 0; i<n; i++){
+        student += arr[i];
+        if(student>m){
+            student = arr[i];
+            count ++;
+        }
+    }
+    return count;
+}
+long long allocateBooks(vector<long long>& books, int N, int M) {
+    int low = *min_element(books.begin(),books.end());
+    int n = books.size();
+    int sum = 0;
+    for(int i = 0; i<n; i++){
+        sum+= books[i];
+    }
+    int high = sum;
+    while(low<=high){
+        int m = (low+high)/2;
+        if(studentcheck(books,m)<=M){
+            high  = m-1;
+        }
+        else {
+            low = m+1;
+        }
+        
+    }
+    return low;
+}
