@@ -1,0 +1,49 @@
+class Solution {
+public:
+    // Returns how many subarrays are needed if max allowed subarray sum is m
+    int subarrays(vector<int>& arr, int m) {
+        int sub = 1;
+        int sum = 0;
+        int n = arr.size();
+
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+
+            // If current subarray exceeds m,
+            // start a new subarray from arr[i]
+            if (sum > m) {
+                sub++;
+                sum = arr[i];
+            }
+        }
+
+        return sub;
+    }
+
+    int splitArray(vector<int>& nums, int k) {
+        // Minimum possible answer:
+        // largest single element (can't split an element)
+        int low = *max_element(nums.begin(), nums.end());
+
+        // Maximum possible answer:
+        // sum of entire array (no split)
+        int high = accumulate(nums.begin(), nums.end(), 0);
+
+        while (low <= high) {
+            int m = (low + high) / 2;
+
+            // If more than k subarrays needed,
+            // m is too small
+            if (subarrays(nums, m) > k) {
+                low = m + 1;
+            }
+            else {
+                // m works, try smaller answer
+                high = m - 1;
+            }
+        }
+
+        // low is the minimum possible largest subarray sum
+        return low;
+    }
+};
