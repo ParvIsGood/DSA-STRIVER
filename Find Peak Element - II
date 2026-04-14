@@ -1,0 +1,51 @@
+class Solution {
+public:
+    int rowmax(vector<vector<int>>& arr, int m) {
+        int n = arr.size();
+        int maxi = -1;
+        int index = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (arr[i][m] > maxi) {
+                maxi = arr[i][m];
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    vector<int> findPeakGrid(vector<vector<int>>& mat) {
+        int r = mat.size();
+        int c = mat[0].size();
+
+        int low = 0;
+        int high = c - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            int row = rowmax(mat, mid);
+
+            int left  = (mid - 1 >= 0) ? mat[row][mid - 1] : -1;
+            int right = (mid + 1 < c) ? mat[row][mid + 1] : -1;
+
+            // If current element is greater than both neighbors, it's a peak
+            if (mat[row][mid] > left && mat[row][mid] > right) {
+                return {row, mid};
+            }
+
+            // Move towards the greater neighbor
+            else if (mat[row][mid] < left) {
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+
+        return {};
+    }
+};
+
+
