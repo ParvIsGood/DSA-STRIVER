@@ -1,0 +1,35 @@
+class Solution {
+public:
+    string reverseWords(string s) {
+        int n = s.size();
+        int i = n - 1;
+        string result;
+
+        while (i >= 0) {
+            // Skip trailing/multiple spaces
+            while (i >= 0 && s[i] == ' ') {
+                i--;
+            }
+
+            if (i < 0) break;
+
+            // Mark end of current word
+            int j = i;
+
+            // Move to start of current word
+            while (i >= 0 && s[i] != ' ') {
+                i--;
+            }
+
+            // Add space before next word (not before first word)
+            if (!result.empty()) {
+                result += ' ';
+            }
+
+            // Append current word
+            result += s.substr(i + 1, j - i);
+        }
+
+        return result;
+    }
+};
