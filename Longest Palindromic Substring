@@ -1,0 +1,57 @@
+class Solution {
+public:
+
+    string longestPalindrome(string s) {
+
+        int n = s.size();
+
+        int maxl = 0;      // Stores maximum palindrome length
+        string res = "";   // Stores longest palindrome substring
+
+        // -------- Odd Length Palindrome --------
+        for (int i = 0; i < n; i++) {
+
+            int left = i;
+            int right = i;
+
+            // Expand around center
+            while (left >= 0 && right < n && s[left] == s[right]) {
+
+                int len = right - left + 1;
+
+                // Update answer if longer palindrome found
+                if (len > maxl) {
+                    maxl = len;
+                    res = s.substr(left, right - left + 1);
+                }
+
+                left--;
+                right++;
+            }
+        }
+
+        // -------- Even Length Palindrome --------
+        for (int i = 0; i < n; i++) {
+
+            int left = i;
+            int right = i + 1;
+
+            // Expand around center
+            while (left >= 0 && right < n && s[left] == s[right]) {
+
+                int len = right - left + 1;
+
+                // Update answer if longer palindrome found
+                if (len > maxl) {
+                    maxl = len;
+                    res = s.substr(left, right - left + 1);
+                }
+
+                left--;
+                right++;
+            }
+        }
+
+        return res;
+    }
+};
