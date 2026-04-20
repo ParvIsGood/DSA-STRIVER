@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int beautySum(string s) {
+        int n = s.size();
+        int count = 0;
+
+        // Fix starting index of substring
+        for (int j = 0; j < n; j++) {
+
+            // Frequency array for current starting point
+            vector<int> freq(26, 0);
+
+            // Extend substring ending index
+            for (int i = j; i < n; i++) {
+
+                // Add current character into frequency array
+                freq[s[i] - 'a']++;
+
+                int maxi = 0;
+                int mini = INT_MAX;
+
+                // Find max and min positive frequency
+                for (int k = 0; k < 26; k++) {
+                    if (freq[k] > 0) {
+                        maxi = max(maxi, freq[k]);
+                        mini = min(mini, freq[k]);
+                    }
+                }
+
+                // Add beauty of current substring
+                count += (maxi - mini);
+            }
+        }
+
+        return count;
+    }
+};
