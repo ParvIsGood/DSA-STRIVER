@@ -1,0 +1,40 @@
+class Solution {
+public:
+
+    // Function to count substrings with at most k distinct characters
+    int atmost(string& s, int k) {
+        unordered_map<char, int> freq;
+
+        int left = 0;   // Left pointer of sliding window
+        int res = 0;    // Stores total valid substrings
+
+        for (int right = 0; right < s.size(); right++) {
+
+            // Include current character in window
+            freq[s[right]]++;
+
+            // Shrink window until distinct characters <= k
+            while (freq.size() > k) {
+                freq[s[left]]--;
+
+                // Remove character if frequency becomes 0
+                if (freq[s[left]] == 0) {
+                    freq.erase(s[left]);
+                }
+
+                left++;
+            }
+
+            // Count substrings ending at right
+            res += (right - left + 1);
+        }
+
+        return res;
+    }
+
+    int numberOfSubstrings(string s) {
+
+        // Exactly 3 distinct = At most 3 - At most 2
+        return atmost(s, 3) - atmost(s, 2);
+    }
+};
