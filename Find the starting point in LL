@@ -1,0 +1,47 @@
+/**
+ * Problem: LeetCode 142 - Linked List Cycle II
+ * Approach: Floyd's Cycle-Finding Algorithm
+ * Intuition: After detecting a meeting point in the cycle using slow/fast pointers, we reset the 
+ * slow pointer to the head. Moving both pointers one step at a time, the point where they 
+ * eventually meet again is the start of the cycle. This works because the distance from the 
+ * head to the cycle start is equal to the distance from the meeting point to the cycle start.
+ * Complexity: Time: O(n) as we traverse the list; Space: O(1) as we only use pointer variables.
+ */
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ * int val;
+ * ListNode *next;
+ * ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* slow = head; // Initialize slow pointer at head
+        ListNode* fast = head; // Initialize fast pointer at head
+
+        // Step 1: Detect if a cycle exists using fast/slow pointers
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;       // Move slow pointer one step
+            fast = fast->next->next; // Move fast pointer two steps
+            if (slow == fast) break; // Cycle detected, exit loop
+        }
+
+        // Check if cycle detection loop terminated due to no cycle
+        if (fast == NULL || fast->next == NULL) return NULL;
+
+        // Step 2: Find the entry point of the cycle
+        slow = head; // Reset slow pointer to head
+
+        // Move both one step at a time until they meet at the cycle start
+        while (slow != fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        // Return the meeting point, which is the start of the cycle
+        return slow;
+    }
+};
