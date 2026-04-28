@@ -1,0 +1,88 @@
+BRUTEEEE/**
+ * Problem: LeetCode 141 - Linked List Cycle
+ * Approach: Hash Map Tracking
+ * Intuition: We traverse the linked list node by node, storing each node's address in a hash map. 
+ * If we encounter a node that already exists in the map, it implies we have revisited 
+ * a location, confirming the existence of a cycle. This provides a straightforward way 
+ * to track visited states without modifying the input list structure.
+ * Complexity: Time: O(n) where n is the number of nodes; Space: O(n) to store node pointers in the map.
+ */
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ * int val;
+ * ListNode *next;
+ * ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        // Map to keep track of visited nodes to detect cycles
+        unordered_map<ListNode*, int> mpp;
+        ListNode* temp = head;
+
+        // Iterate through the list until the end
+        while (temp != NULL) {
+            // Check if the current node has been visited before
+            if (mpp.find(temp) != mpp.end()) {
+                return true; // Cycle detected
+            }
+
+            // Mark the current node as visited in the map
+            mpp[temp]++;
+            
+            // Move the pointer to the next node
+            temp = temp->next;
+        }
+
+        // No cycle found
+        return false;
+    }
+};
+OPTIMALLLL
+/**
+ * Problem: LeetCode 141 - Linked List Cycle
+ * Approach: Floyd's Cycle-Finding Algorithm (Tortoise and Hare)
+ * Intuition: We use two pointers moving at different speeds. The 'slow' pointer moves one 
+ * step at a time, while the 'fast' pointer moves two steps. If there is a cycle, the 
+ * fast pointer will eventually "lap" the slow pointer and they will meet at the same node. 
+ * If the fast pointer reaches the end of the list, no cycle exists.
+ * Complexity: Time: O(n) as the fast pointer traverses the list; Space: O(1) as we only use two pointers.
+ */
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ * int val;
+ * ListNode *next;
+ * ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    /**
+     * Determines if a linked list contains a cycle using constant extra space.
+     * @param head Pointer to the start of the list.
+     * @return true if a cycle is detected, false otherwise.
+     */
+    bool hasCycle(ListNode *head) {
+        ListNode* slow = head;         // Initialize slow pointer at head
+        ListNode* fast = head;         // Initialize fast pointer at head
+
+        // Traverse until the fast pointer reaches the end of the list
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;         // Move slow pointer one step
+            fast = fast->next->next;   // Move fast pointer two steps
+
+            // If pointers meet, a cycle is detected
+            if (slow == fast) {
+                return true; 
+            }
+        }
+
+        // Fast pointer reached the end, no cycle exists
+        return false;
+    }
+};
