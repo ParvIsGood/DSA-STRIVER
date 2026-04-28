@@ -1,0 +1,27 @@
+/**
+ * Problem: LeetCode 206 - Reverse Linked List
+ * Approach: Iterative pointer manipulation
+ * Intuition: To reverse the list, we traverse each node once and change its 'next' pointer
+ * to point to the previous node. We maintain three pointers: 'back' (previous),
+ * 'temp' (current), and 'front' (next), ensuring we don't lose the remainder
+ * of the list when we break the current link.
+ * Complexity: Time O(n) as we traverse the list exactly once; Space O(1) as we only use pointers.
+ */
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* back  = nullptr;         // Tracks the new list head
+        ListNode* front = nullptr;         // Temp storage for the next node
+        ListNode* temp  = head;            // Current traversal pointer
+
+        while (temp != nullptr) {
+            front       = temp->next;      // Save next node to avoid losing reference
+            temp->next  = back;            // Reverse the pointer direction
+            back        = temp;            // Move 'back' forward to current node
+            temp        = front;           // Advance 'temp' to next node
+        }
+
+        return back;                       // Return the new head of the reversed list
+    }
+};
