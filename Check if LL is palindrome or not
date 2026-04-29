@@ -43,4 +43,60 @@ public:
 };
 
 OPTIMAL
+/**
+ * Problem: LeetCode 234 - Palindrome Linked List
+ * Approach: Two-pointer technique for midpoint finding + In-place list reversal.
+ * * Intuition: 
+ * A palindrome reads the same forwards and backwards. By finding the middle 
+ * of the linked list using a slow/fast pointer, we can reverse the second half 
+ * of the list. We then compare the first half and the reversed second half 
+ * node by node. If all values match until the end, it is a palindrome.
+ * * Complexity: 
+ * Time: O(n) where n is the number of nodes, as we traverse the list a constant number of times.
+ * Space: O(1) as the reversal and comparison are done in-place without extra data structures.
+ */
+
+class Solution {
+public:
+    // Helper function to reverse a singly linked list in-place
+    ListNode* reverse(ListNode* head) {
+        ListNode* back  = nullptr; // Pointer to previous node
+        ListNode* front = nullptr; // Pointer to next node
+        ListNode* temp  = head;    // Current working node
+
+        while (temp != nullptr) {
+            front       = temp->next; // Store next node
+            temp->next  = back;       // Reverse the pointer
+            back        = temp;       // Move back pointer forward
+            temp        = front;      // Move temp pointer forward
+        }
+        return back; // New head of reversed list
+    }
+
+    bool isPalindrome(ListNode* head) {
+        // Handle trivial cases
+        if (!head || !head->next) return true;
+
+        // Use fast/slow pointers to find the midpoint
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast->next != nullptr && fast->next->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // Split the list and reverse the second half
+        ListNode* first = reverse(slow->next);
+        ListNode* sec   = head;
+
+        // Compare values between first half and reversed second half
+        while (first != nullptr) {
+            if (first->val != sec->val) return false;
+            sec   = sec->next;
+            first = first->next;
+        }
+
+        return true;
+    }
+};
 
