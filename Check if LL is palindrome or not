@@ -1,0 +1,46 @@
+BRUTE FORCE
+
+
+/**
+ * Problem: LeetCode 234 - Palindrome Linked List
+ * Approach: Stack-based comparison.
+ * Intuition: A palindrome reads the same forwards and backwards. By pushing all
+ * node values onto a stack, we effectively reverse their order. We then traverse
+ * the list again, comparing each node to the top of the stack to verify if the 
+ * sequence is identical in both directions.
+ * Complexity: Time $O(N)$ because we traverse the list twice; Space $O(N)$ to store 
+ * node values in the stack.
+ */
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        std::stack<int> st;
+        ListNode* temp = head;
+
+        // Push all node values onto the stack to reverse order
+        while (temp != nullptr) {
+            st.push(temp->val);
+            temp = temp->next;
+        }
+
+        // Reset pointer to start for comparison
+        temp = head;
+
+        // Compare list values with stack elements
+        while (temp != nullptr) {
+            // If values don't match, it is not a palindrome
+            if (temp->val != st.top()) {
+                return false;
+            }
+            
+            st.pop();             // Remove top element after verification
+            temp = temp->next;    // Move to next node
+        }
+
+        return true;              // All nodes matched
+    }
+};
+
+OPTIMAL
+
