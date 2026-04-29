@@ -1,0 +1,38 @@
+/*
+ * Problem: Length of Loop in Linked List (Floyd's Cycle-Finding Algorithm)
+ * Approach: Two-pointer (Tortoise and Hare)
+ * Intuition: Use two pointers at different speeds to detect a cycle. Once the
+ * fast pointer meets the slow pointer, a cycle exists. To find the
+ * length, freeze one pointer at the meeting point and traverse the
+ * cycle with the other until they meet again, counting the steps.
+ * Complexity: Time O(N) where N is the number of nodes; Space O(1) as we use constant extra space.
+ */
+
+class Solution {
+public:
+    int lengthOfLoop(Node* head) {
+        Node* slow = head;
+        Node* fast = head;
+
+        // Traverse the list to detect a cycle
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;             // Move slow pointer by 1 step
+            fast = fast->next->next;       // Move fast pointer by 2 steps
+
+            // Cycle detected when pointers meet
+            if (slow == fast) {
+                int len = 1;               // Initialize length counter
+                slow = slow->next;         // Move to next node to start counting
+
+                // Traverse the cycle until returning to the meeting point
+                while (slow != fast) {
+                    len++;                 // Increment length for each node
+                    slow = slow->next;     // Advance pointer
+                }
+                return len;                // Return the total cycle length
+            }
+        }
+
+        return 0;                          // Return 0 if no cycle is found
+    }
+};
