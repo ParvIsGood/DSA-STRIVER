@@ -1,0 +1,103 @@
+BRUTE
+/**
+ * Problem:  LeetCode 19 - Remove Nth Node From End of List
+ * Approach: Two-pass length calculation and targeted removal.
+ * Intuition: First, we traverse the list to find the total length (N). 
+ *            The K-th node from the end is equivalent to the (N-K)-th node 
+ *            from the start. We handle the edge case where the head is removed, 
+ *            then traverse to the node preceding the target to relink the list.
+ * 
+ * Complexity:
+ * - Time:  O(L) - Two passes through the list (one for length, one for removal).
+ * - Space: O(1) - Only a few pointers are used; no extra data structures.
+ */
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* temp = head;
+        int count      = 0;
+
+        // First pass: Calculate total length of the list
+        while (temp != nullptr) {
+            count++;
+            temp = temp->next;
+        }
+
+        // Calculate steps needed to reach the node before the target
+        int stepsToTarget = count - n;
+
+        // Edge case: If the node to remove is the head node
+        if (stepsToTarget == 0) {
+            ListNode* newHead = head->next;
+            delete head; // Free memory of removed head
+            return newHead;
+        }
+
+        temp = head;
+        // Second pass: Traverse to the node immediately before the one to be deleted
+        while (temp != nullptr) {
+            stepsToTarget--;
+
+            if (stepsToTarget == 0) {
+                ListNode* nodeToDelete = temp->next;       // Identify the target node
+                temp->next             = temp->next->next; // Bypass the target node
+                nodeToDelete->next     = nullptr;          // Isolate node from list
+                delete nodeToDelete;                       // Clean up memory
+                return head;
+            }
+            temp = temp->next;
+        }
+
+        return head;
+    }
+};
+OPTIMAL
+/**
+ * Problem:   LeetCode 19 - Remove Nth Node From End of List
+ * Approach:  Two-pointer (Fast & Slow) technique.
+ * Intuition: By moving a "fast" pointer N steps ahead, we create a gap. When the fast 
+ *            pointer reaches the end, the "slow" pointer will be exactly at the node 
+ *            preceding the one to be deleted. This allows for a single-pass removal 
+ *            without needing to calculate the total list length first.
+ * Complexity:
+ *   - Time:  O(L) - We traverse the list exactly once.
+ *   - Space: O(1) - Constant extra space used for two pointers.
+ */
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* fast = head;
+
+        // Move fast pointer n steps ahead to create the window
+        for (int i = 0; i < n; i++) {
+            fast = fast->next;
+        }
+
+        // If fast is null, n equals length; we must remove the head
+        if (fast == nullptr) {
+            ListNode* newHead = head->next;
+            delete head; // Clean up memory for the original head
+            return newHead;
+        }
+
+        ListNode* slow = head;
+
+        // Move both until fast reaches the last node
+        while (fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        // slow->next is the target; relink to skip it
+        ListNode* dnode = slow->next;
+        slow->next      = slow->next->next;
+        
+        // Isolate the node and free memory
+        dnode->next     = nullptr;
+        delete dnode;
+
+        return head;
+    }
+};
