@@ -1,0 +1,45 @@
+/**
+ * Problem   : LeetCode 2095 - Delete the Middle Node of a Linked List
+ * Approach  : Fast and Slow Pointers (Two-Pointer Technique)
+ * Intuition : By moving a 'fast' pointer at twice the speed of a 'slow' pointer, we can find the 
+ *             middle of the list. We offset the fast pointer initially to ensure the slow 
+ *             pointer stops exactly at the node preceding the middle, allowing for a 
+ *             clean deletion without needing a separate 'previous' pointer.
+ * Complexity: 
+ *   - Time  : O(n) where n is the number of nodes; we traverse the list once.
+ *   - Space : O(1) as we only use a constant amount of extra pointer space.
+ */
+
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        // Handle base cases: empty list or single-node list
+        if (head == nullptr || head->next == nullptr) {
+            return nullptr;
+        }
+
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        // Offset fast pointer by two steps to stop slow pointer at (middle - 1)
+        fast = fast->next->next;
+
+        // Standard tortoise and hare traversal
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;       // Moves one step
+            fast = fast->next->next; // Moves two steps
+        }
+
+        // Identify the target node to be removed
+        ListNode* target = slow->next;
+        
+        // Bypass the middle node by linking slow to the node after middle
+        slow->next       = target->next;
+        
+        // Isolate the middle node and free memory to prevent leaks
+        target->next     = nullptr;
+        delete target;
+
+        return head;
+    }
+};
