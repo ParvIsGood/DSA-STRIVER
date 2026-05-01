@@ -1,0 +1,73 @@
+/**
+ * @file: LeetCode 148 - Sort List
+ * @approach: Merge Sort on Linked List
+ * @intuition: Uses a divide-and-conquer strategy by recursively splitting the list at its midpoint 
+ *             until reaching single nodes. These sorted sub-lists are then merged back together 
+ *             using a dummy-head pointer technique, ensuring the relative order of elements is 
+ *             preserved while maintaining a stable sort.
+ * 
+ * @complexity:
+ * - Time: O(n log n) | The list is halved log n times, and each level performs O(n) work during merging.
+ * - Space: O(log n) | Recursive stack depth for the divide-and-conquer calls.
+ */
+
+class Solution {
+public:
+    /**
+     * Standard merge procedure for two sorted linked lists
+     */
+    ListNode* msort(ListNode* left, ListNode* right) {
+        ListNode* dummy = new ListNode(-1);            // Temporary head to simplify edge cases
+        ListNode* temp  = dummy;                       // Pointer to track the tail of the merged list
+
+        while (left != nullptr && right != nullptr) {  // Compare heads of both sub-lists
+            if (left->val <= right->val) {             // Take smaller value to maintain sort order
+                temp->next = left;
+                left       = left->next;               // Advance left pointer
+            } else {
+                temp->next = right;
+                right      = right->next;              // Advance right pointer
+            }
+            temp = temp->next;                         // Move merge tail forward
+        }
+
+        // Attach remaining nodes if one list is exhausted
+        temp->next = (left != nullptr) ? left : right; 
+
+        ListNode* result = dummy->next;                // Store result before deleting dummy
+        delete dummy;                                  // Clean up heap allocation
+        return result;
+    }
+
+    /**
+     * Finds the middle node using Tortoise and Hare algorithm
+     */
+    ListNode* middle(ListNode* head) {
+        ListNode* slow = head;                         // Moves one step at a time
+        ListNode* fast = head->next;                   // Moves two steps to find left-middle
+
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;                         // Standard slow increment
+            fast = fast->next->next;                   // Standard fast jump
+        }
+        return slow;                                   // Slow now points to the end of first half
+    }
+
+    /**
+     * Main recursive function to split and sort the list
+     */
+    ListNode* sortList(ListNode* head) {
+        if (head == nullptr || head->next == nullptr) {
+            return head;                               // Base case: empty or single node list
+        }
+
+        ListNode* mid   = middle(head);                // Locate the split point
+        ListNode* right = mid->next;                   // Identify start of the second half
+        mid->next       = nullptr;                     // Break the link to isolate sub-lists
+
+        ListNode* left_sorted  = sortList(head);       // Recursively sort the left half
+        ListNode* right_sorted = sortList(right);      // Recursively sort the right half
+
+        return msort(left_sorted, right_sorted);       // Combine sorted halves
+    }
+};
