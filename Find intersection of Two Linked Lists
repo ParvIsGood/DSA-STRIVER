@@ -1,0 +1,62 @@
+optimjal 1
+
+/**
+ * Problem:   LeetCode 160 - Intersection of Two Linked Lists
+ * Approach:  Difference in Length (Length Alignment)
+ * Intuition: Since an intersection point forces the remaining tail to be identical for both lists, 
+ *            the lists only differ in the length of their prefixes. By calculating the lengths and 
+ *            advancing the pointer of the longer list by the difference, we align both pointers 
+ *            so they reach the intersection point (or the end) simultaneously.
+ * 
+ * Complexity:
+ * - Time:  O(N + M) | We traverse list A (N) and list B (M) to find lengths, then traverse again.
+ * - Space: O(1)     | We only use a constant amount of extra space for pointers and counters.
+ */
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int      n1    = 0;
+        int      n2    = 0;
+        ListNode *tempA = headA;
+        ListNode *tempB = headB;
+
+        // Calculate length of List A
+        while (tempA != nullptr) {
+            n1++;
+            tempA = tempA->next;
+        }
+
+        // Calculate length of List B
+        while (tempB != nullptr) {
+            n2++;
+            tempB = tempB->next;
+        }
+
+        // Reset pointers to start for alignment
+        tempA = headA;
+        tempB = headB;
+
+        // Move the pointer of the longer list forward by the difference (n1 - n2)
+        if (n1 >= n2) {
+            for (int i = 0; i < (n1 - n2); i++) {
+                tempA = tempA->next; // Offset List A
+            }
+        } else {
+            for (int i = 0; i < (n2 - n1); i++) {
+                tempB = tempB->next; // Offset List B
+            }
+        }
+
+        // Traverse both lists in sync to find the intersection node
+        while (tempA != nullptr) {
+            if (tempA == tempB) {    // Reference comparison checks for same node
+                return tempA;
+            }
+            tempA = tempA->next;     // Move forward in sync
+            tempB = tempB->next;     // Move forward in sync
+        }
+
+        return nullptr;              // No intersection found
+    }
+};
