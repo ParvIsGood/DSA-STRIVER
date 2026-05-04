@@ -1,0 +1,72 @@
+/**
+ * Problem: Add Number Represented as Linked List (Add One)
+ * Source:  Generic Utility / Coding Interview Classic
+ * 
+ * Approach: Reverse, increment, and reverse back.
+ * 
+ * Intuition: Linked lists are forward-pointing, but addition flows from right to left (LSB to MSB).
+ * To handle carries naturally, we flip the list to process the units digit first. We traverse
+ * through the nodes, carrying over the '+1' until no carry remains. If we finish the list
+ * with a carry still active (e.g., 999 + 1), we append a new node. Finally, we flip the list 
+ * back to its original orientation.
+ * 
+ * Complexity:
+ * - Time: O(N), where N is the number of nodes (Three linear passes: reverse, add, reverse).
+ * - Space: O(1), as we modify the existing list in-place (O(1) additional node for new carry).
+ */
+
+class Solution {
+public:
+    /**
+     * Reverses a singly linked list in-place.
+     */
+    Node* reverse(Node* head) {
+        if (head == nullptr || head->next == nullptr) return head;
+
+        Node* curr  = head;                                // Track current node during traversal
+        Node* prev  = nullptr;                             // Points to the processed portion
+        Node* next  = nullptr;                             // Temporarily stores the remaining list
+
+        while (curr != nullptr) {
+            next       = curr->next;                       // Save next node before breaking link
+            curr->next = prev;                             // Reverse the pointer direction
+            prev       = curr;                             // Move prev forward
+            curr       = next;                             // Move curr forward
+        }
+        return prev;                                       // New head of the reversed list
+    }
+
+    /**
+     * Adds 1 to the number represented by the linked list.
+     */
+    Node* addOne(Node* head) {
+        int carry   = 1;                                   // Initial addition value
+        Node* reversedHead = reverse(head);                // Flip to process Least Significant Bit
+        Node* temp  = reversedHead;                        // Iterator for the reversed list
+        Node* last  = nullptr;                             // Track tail to handle terminal carry
+
+        while (temp != nullptr) {
+            int sum = temp->data + carry;                  // Calculate value for current node
+
+            if (sum > 9) {
+                temp->data = 0;                            // Reset digit on overflow
+                carry      = 1;                            // Propagate carry to next node
+            } else {
+                temp->data = sum;                          // Apply sum
+                carry      = 0;                            // Reset carry
+                break;                                     // Exit early if no carry remains
+            }
+
+            last = temp;                                   // Update tail pointer
+            temp = temp->next;                             // Advance to next digit
+        }
+
+        // Handle case where carry propagates beyond the Most Significant Bit (e.g., 99 -> 100)
+        if (carry == 1) {
+            Node* newNode = new Node(1);                   // Create overflow node
+            last->next    = newNode;                       // Link it to the end of reversed list
+        }
+
+        return reverse(reversedHead);                      // Restore original list order
+    }
+};
