@@ -70,3 +70,57 @@ public:
         return reverse(reversedHead);                      // Restore original list order
     }
 };
+RECURSSION
+/**
+ * Problem:   Add 1 to a number represented as a Linked List (e.g., GeeksforGeeks)
+ * Approach:  Recursive Backtracking (Post-order Traversal)
+ * Intuition: Treat the recursion stack as a way to traverse the list in reverse. 
+ *            By moving to the tail first and adding 1 on the way back up, we handle 
+ *            carries naturally from the least significant digit to the most.
+ * Complexity:
+ *   - Time:  O(N) where N is the number of nodes (single pass traversal).
+ *   - Space: O(N) for the recursion stack in the worst case (linear list).
+ */
+
+class Solution {
+public:
+    /**
+     * Recursively moves to the end of the list and adds carry back up.
+     * @param node The current node being processed.
+     * @return The carry to be added to the previous node (0 or 1).
+     */
+    int solveCarry(Node* node) {
+        // Base case: Reached the end, return 1 to start the increment
+        if (node == nullptr) return 1;
+
+        // Recurse to the next node and capture the resulting carry
+        int carry = solveCarry(node->next);
+
+        // Update current node data with carry from the right
+        node->data += carry;
+
+        // If no further carry is needed, update and stop propagation
+        if (node->data < 10) return 0;
+
+        // Handle overflow: Reset digit to 0 and propagate carry of 1
+        node->data = 0;
+        return 1;
+    }
+
+    /**
+     * Main function to add one to the linked list number.
+     */
+    Node* addOne(Node* head) {
+        // Calculate carry starting from the head via recursion
+        int finalCarry = solveCarry(head);
+
+        // If a carry reaches the head (e.g., 999 -> 1000), create a new MSB
+        if (finalCarry == 1) {
+            Node* newHead = new Node(1); // Create node for the new highest digit
+            newHead->next = head;        // Link it to the existing list
+            return newHead;              // Return the new starting point
+        }
+
+        return head; // Return original head if no new digit was created
+    }
+};
