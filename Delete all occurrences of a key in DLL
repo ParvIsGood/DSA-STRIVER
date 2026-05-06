@@ -1,0 +1,53 @@
+/**
+ * Problem: Delete all occurrences of a key in a Doubly Linked List
+ * Source:  GeeksforGeeks / Standard Linked List Utility
+ * 
+ * Approach: Single-pass iterative traversal with pointer reconfiguration.
+ * 
+ * Intuition:
+ * To remove a node from a doubly linked list, we must bridge its previous and next 
+ * neighbors. We walk through the list node-by-node; if a node matches the target 
+ * value 'x', we update the 'next' pointer of the previous node and the 'prev' 
+ * pointer of the succeeding node. Special care is taken for the head node to ensure 
+ * the external pointer is updated if the head itself is deleted.
+ * 
+ * Complexity:
+ * - Time:  O(N), where N is the number of nodes, as we visit each node exactly once.
+ * - Space: O(1), as deletion is performed in-place without auxiliary data structures.
+ */
+
+class Solution {
+public:
+    void deleteAllOccurOfX(struct Node** head, int x) {
+        // Handle empty list case early
+        if (head == nullptr || *head == nullptr) return;
+
+        Node* curr = *head;                      // Iterator for the traversal
+
+        while (curr != nullptr) {
+            if (curr->data == x) {
+                Node* nextNode = curr->next;     // Store next for traversal continuity
+                Node* prevNode = curr->prev;     // Store prev for bridging logic
+
+                // If deleting the head, shift the head pointer forward
+                if (prevNode == nullptr) {
+                    *head = nextNode;
+                } else {
+                    prevNode->next = nextNode;   // Bridge previous node to the next
+                }
+
+                // If not at the tail, bridge next node back to the previous
+                if (nextNode != nullptr) {
+                    nextNode->prev = prevNode;
+                }
+
+                Node* nodeToDelete = curr;       // Capture target node for deallocation
+                curr               = nextNode;   // Move iterator before deleting
+
+                delete nodeToDelete;             // Deallocate memory to prevent leaks
+            } else {
+                curr = curr->next;               // Continue traversal if no match
+            }
+        }
+    }
+};
