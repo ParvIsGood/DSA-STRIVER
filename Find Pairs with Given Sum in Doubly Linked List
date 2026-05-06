@@ -1,0 +1,55 @@
+/**
+ * Problem: Find Pairs with Given Sum in a Sorted Doubly Linked List
+ * Source:  GeeksforGeeks / Generic Linked List Utility
+ * 
+ * Approach: Two-Pointer Technique (Shrinking Window)
+ * 
+ * Intuition: Since the doubly linked list is sorted, we can place one pointer at the start 
+ * and another at the end. By calculating their sum, we can decide whether to move the 
+ * start pointer forward (to increase the sum) or the end pointer backward (to decrease 
+ * the sum). This mimics the behavior of a two-pointer approach on a sorted array, 
+ * leveraging the 'prev' pointer of the doubly linked list to traverse backward.
+ * 
+ * Complexity:
+ * - Time: O(N), where N is the number of nodes. We traverse once to find the tail and 
+ *         once more to find all pairs.
+ * - Space: O(1) auxiliary space (excluding the output vector), as we only use 
+ *          a few pointer variables.
+ */
+
+class Solution {
+public:
+    vector<pair<int, int>> findPairsWithGivenSum(Node* head, int target) {
+        vector<pair<int, int>> result;
+
+        // Validation for empty or single-node list
+        if (!head || !head->next) return result;
+
+        Node* left  = head;                                     // Initialize left pointer at head
+        Node* right = head;                                     // Initialize right pointer to find tail
+
+        // Move right pointer to the last node of the list
+        while (right->next != nullptr) {
+            right = right->next;
+        }
+
+        // Two-pointer traversal: stop if pointers cross or meet
+        while (left != nullptr && right != nullptr && left->data < right->data) {
+            int currentSum = left->data + right->data;          // Calculate sum of current pair
+
+            if (currentSum == target) {
+                result.push_back({left->data, right->data});    // Store valid pair
+                left  = left->next;                             // Shrink window from left
+                right = right->prev;                            // Shrink window from right
+            } 
+            else if (currentSum < target) {
+                left  = left->next;                             // Sum too small; move left forward
+            } 
+            else {
+                right = right->prev;                            // Sum too large; move right backward
+            }
+        }
+
+        return result;                                          // Return collected pairs
+    }
+};
