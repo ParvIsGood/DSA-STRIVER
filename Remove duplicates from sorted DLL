@@ -1,0 +1,46 @@
+/*
+class Node {
+public:
+    int data;  // value stored in node
+    Node* next;
+    Node* prev;
+
+    Node(int value) {
+        data = value;
+        next = nullptr;
+        prev = nullptr;
+    }
+}
+*/
+class Solution {
+  public:
+  Node* remove(Node* head){
+      Node* temp = head;
+      Node* back = temp->prev;
+      Node* front = temp->next;
+      if(front==NULL){
+          back->next = front;
+      }
+      else {
+          back->next = front;
+          front->prev = back;
+      }
+      delete temp;
+      return front;
+  }
+    Node* removeDuplicates(Node* head) {
+Node* temp = head;
+int x = -1;
+while(temp!=NULL){
+    if(temp->data == x){
+     temp  =   remove(temp);
+    }
+    else {
+        x = temp->data;
+        temp = temp->next;
+    }
+    
+}
+return head;
+    }
+};
