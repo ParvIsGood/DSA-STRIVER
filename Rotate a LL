@@ -1,0 +1,105 @@
+/**
+ * Problem: LeetCode 61 - Rotate List
+ * Approach: Circular connection and break-point strategy.
+ * Intuition: A rotation of k is simply shifting the head to the (len - k % len)th node. 
+ *            By finding the tail, connecting it to the head to form a ring, and then 
+ *            counting steps to the new tail, we can effortlessly reassign the 
+ *            new head and break the circle.
+ * Complexity:
+ *   - Time: O(N), where N is the length of the list (two passes: length and rotation).
+ *   - Space: O(1), no extra space beyond a few pointers.
+ */
+
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        // Handle empty list, single node, or no rotation required
+        if (head == nullptr || head->next == nullptr || k == 0) return head;
+
+        ListNode* temp = head;
+        ListNode* note = head;
+        ListNode* newh = head;
+        int len        = 0;
+
+        // Traverse to calculate the total length of the linked list
+        while (temp != nullptr) {
+            len++;
+            temp = temp->next;
+        }
+
+        temp  = head;               // Reset temp to head for second traversal
+        int x = len - k % len;      // Calculate offset for the new tail position
+
+        // If rotation results in the original head, return immediately
+        if (x == len) return head;
+
+        int cnt = 0;                // Counter to track progress to the break point
+        // Traverse to find the node that will become the new tail (note)
+        while (temp != nullptr && temp->next != nullptr) {
+            cnt++;
+            if (cnt == x) {
+                 note = temp;       // Store the node that will be the new tail
+                 newh = temp->next; // The subsequent node becomes the new head
+            }
+            temp = temp->next;      // Continue until temp reaches the current tail
+        }
+
+        note->next = nullptr;       // Break the link to terminate the new list
+        ListNode* g = temp;         // temp is now at the original tail
+        g->next     = head;         // Connect original tail to original head
+
+        return newh;
+    }
+};/**
+ * Problem: LeetCode 61 - Rotate List
+ * Approach: Circular connection and break-point strategy.
+ * Intuition: A rotation of k is simply shifting the head to the (len - k % len)th node. 
+ *            By finding the tail, connecting it to the head to form a ring, and then 
+ *            counting steps to the new tail, we can effortlessly reassign the 
+ *            new head and break the circle.
+ * Complexity:
+ *   - Time: O(N), where N is the length of the list (two passes: length and rotation).
+ *   - Space: O(1), no extra space beyond a few pointers.
+ */
+
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        // Handle empty list, single node, or no rotation required
+        if (head == nullptr || head->next == nullptr || k == 0) return head;
+
+        ListNode* temp = head;
+        ListNode* note = head;
+        ListNode* newh = head;
+        int len        = 0;
+
+        // Traverse to calculate the total length of the linked list
+        while (temp != nullptr) {
+            len++;
+            temp = temp->next;
+        }
+
+        temp  = head;               // Reset temp to head for second traversal
+        int x = len - k % len;      // Calculate offset for the new tail position
+
+        // If rotation results in the original head, return immediately
+        if (x == len) return head;
+
+        int cnt = 0;                // Counter to track progress to the break point
+        // Traverse to find the node that will become the new tail (note)
+        while (temp != nullptr && temp->next != nullptr) {
+            cnt++;
+            if (cnt == x) {
+                 note = temp;       // Store the node that will be the new tail
+                 newh = temp->next; // The subsequent node becomes the new head
+            }
+            temp = temp->next;      // Continue until temp reaches the current tail
+        }
+
+        note->next = nullptr;       // Break the link to terminate the new list
+        ListNode* g = temp;         // temp is now at the original tail
+        g->next     = head;         // Connect original tail to original head
+
+        return newh;
+    }
+};
