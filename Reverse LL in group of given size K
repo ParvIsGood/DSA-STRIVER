@@ -1,0 +1,75 @@
+/**
+ * Problem: LeetCode 25 - Reverse Nodes in k-Group
+ * Approach: Iterative block-by-block reversal using a helper function.
+ * Intuition: The list is processed in segments of size k. For each segment, we locate 
+ *            the k-th node to identify the boundary. If a full segment exists, we 
+ *            detach it, reverse it, and reconnect it to the previous segment's tail. 
+ *            If fewer than k nodes remain, we leave them as-is and terminate.
+ * Complexity: 
+ *   - Time: O(N) because each node is visited at most twice (once to find k, once to reverse).
+ *   - Space: O(1) as we perform the reversal in-place without extra data structures.
+ */
+
+class Solution {
+public:
+    /**
+     * Standard iterative reversal of a linked list segment.
+     */
+    ListNode* Reversal(ListNode* head) {
+        ListNode* temp = head;
+        ListNode* prev = nullptr;
+
+        while (temp != nullptr) {
+            ListNode* front = temp->next;   // Save next node to prevent losing the list
+            temp->next      = prev;         // Flip the pointer direction
+            prev            = temp;         // Move prev forward
+            temp            = front;        // Move temp forward
+        }
+        return prev;                        // New head of the reversed segment
+    }
+
+    /**
+     * Utility to find the k-th node from the current position.
+     */
+    ListNode* kthnode(ListNode* temp, int k) {
+        k -= 1;                             // Adjust for 0-based counting to find k-th node
+        while (temp != nullptr && k > 0) {
+            k--;
+            temp = temp->next;              // Traverse forward until k is reached
+        }
+        return temp;                        // Returns NULL if segment is shorter than k
+    }
+
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* temp  = head;             // Pointer to track current segment start
+        ListNode* prev  = nullptr;          // Tail of the previously processed segment
+        ListNode* front = nullptr;          // Pointer to the start of the next segment
+
+        while (temp != nullptr) {
+            ListNode* knode = kthnode(temp, k);
+
+            if (knode != nullptr) {
+                front       = knode->next;  // Store start of the remaining list
+                knode->next = nullptr;      // Terminate current segment for reversal
+            } else {
+                if (prev) {
+                    prev->next = temp;      // Attach remaining nodes if less than k
+                }
+                break;
+            }
+
+            ListNode* tail = Reversal(temp); // Reverse the isolated segment
+
+            if (temp == head) {
+                head = knode;               // Update global head on the first segment
+            } else {
+                prev->next = tail;          // Link previous segment to new reversed head
+            }
+
+            prev = temp;                    // Original segment head is now the segment tail
+            temp = front;                   // Move to the next block
+        }
+
+        return head;
+    }
+};
