@@ -1,0 +1,23 @@
+class Solution {
+public:
+double power(double x, long long n, double ans){
+    if(n==0) return 1.0;
+    if(n%2==0){
+ans = power(x*x , n/2 , ans);
+    }
+    else{
+        ans = x*power(x,n-1,ans);
+    }
+    return ans;
+}
+    double myPow(double x, int n) {
+        if(x==1.0) return 1.0;
+        long long N = n;
+        if(N<0){
+            x = 1/x;
+            N = -N;
+        }
+     double ans = 1.0;
+     return power(x , N, ans);   
+    }
+};
