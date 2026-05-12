@@ -1,0 +1,62 @@
+/**
+ * Problem: LeetCode 138 - Copy List with Random Pointer
+ * Approach: Interweaving Nodes (Three-pass algorithm)
+ * 
+ * Intuition: Instead of using a hash map for extra space, we weave the copied nodes 
+ * directly after their originals (A -> A' -> B -> B'). This physical proximity allows 
+ * us to set the 'random' pointers of the copies by simply looking at the original's 
+ * random pointer's next node. Finally, we decouple the lists to restore the original.
+ * 
+ * Time Complexity:  O(N) - We traverse the list exactly three times.
+ * Space Complexity: O(1) - No auxiliary data structures are used, excluding the new list.
+ */
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (head == nullptr) return nullptr;
+
+        Node* curr = head;
+
+        // Phase 1: Create new nodes and weave them into the original list
+        while (curr != nullptr) {
+            Node* newNode = new Node(curr->val); // Create copy node
+            newNode->next = curr->next;         // Link copy to original's next
+            curr->next    = newNode;            // Link original to copy
+            curr          = newNode->next;      // Move to the next original node
+        }
+
+        curr = head;
+
+        // Phase 2: Assign random pointers for the copied nodes
+        while (curr != nullptr) {
+            if (curr->random != nullptr) {
+                // Copy's random is the node after original's random
+                curr->next->random = curr->random->next;
+            } else {
+                curr->next->random = nullptr;
+            }
+            curr = curr->next->next;            // Skip the copy node
+        }
+
+        Node* original = head;
+        Node* copy     = head->next;
+        Node* copyHead = head->next;            // Save reference to the new head
+
+        // Phase 3: Restore the original list and extract the copy list
+        while (original != nullptr) {
+            original->next = original->next->next; // Restore original's next link
+            
+            if (copy->next != nullptr) {
+                copy->next = copy->next->next;     // Link copy to the next copy
+            } else {
+                copy->next = nullptr;              // End of the copy list
+            }
+            
+            original = original->next;             // Advance original pointer
+            copy     = copy->next;                 // Advance copy pointer
+        }
+
+        return copyHead;
+    }
+};
