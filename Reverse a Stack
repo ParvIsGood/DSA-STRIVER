@@ -1,0 +1,50 @@
+/**
+ * Problem:  Reverse a Stack (Recursive)
+ * Approach: Two-phase recursion (Backtracking)
+ * Intuition: The core idea is to empty the stack using the call stack of the primary 
+ *            function (reverseStack) to hold all elements. Once the stack is empty, 
+ *            we use a helper function (insertt) to insert each popped element at the 
+ *            very bottom of the stack, effectively flipping the original order.
+ * 
+ * Complexity:
+ * - Time:  O(n^2) | Each of the N elements involves a recursive insertion of up to N elements.
+ * - Space: O(n)   | Recursive call stack depth is proportional to the number of elements.
+ */
+
+class Solution {
+public:
+    /**
+     * Inserts an element at the bottom of the stack
+     */
+    void insertt(stack<int> &st, int element) {
+        // Base case: if stack is empty, we've reached the bottom
+        if (st.empty()) {
+            st.push(element);
+            return;
+        }
+
+        int tope = st.top();          // Store top to backtrack later
+        st.pop();                     // Remove top to reach lower levels
+        
+        insertt(st, element);         // Recursive call to find the bottom
+        
+        st.push(tope);                // Push stored element back on top
+    }
+
+    /**
+     * Reverses the stack in-place using recursion
+     */
+    void reverseStack(stack<int> &st) {
+        // Base case: an empty stack is already reversed
+        if (st.empty()) {
+            return;
+        }
+
+        int element = st.top();       // Hold current top element in local scope
+        st.pop();                     // Pop it to process the rest of the stack
+        
+        reverseStack(st);             // Recursively empty the stack
+        
+        insertt(st, element);         // Insert the held element at the bottom
+    }
+};
