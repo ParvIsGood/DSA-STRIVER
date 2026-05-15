@@ -1,0 +1,77 @@
+#include <iostream>
+#include <stack>
+
+using namespace std;
+
+/**
+ * THE SPECIALIST: insert()
+ * Responsibility: Assumes the stack is already sorted.
+ * Finds the correct spot for 'element' and drops it there.
+ */
+void insertSorted(stack<int>& s, int element) {
+    // Base Case: Stack is empty OR the current top is smaller/equal to our element
+    // (This ensures the stack stays sorted in ascending order internally)
+    if (s.empty() || s.top() <= element) {
+        s.push(element);
+        return;
+    }
+
+    // If the top is bigger, it's in our way. Hold it temporarily.
+    int topElement = s.top();
+    s.pop();
+
+    // Recurse to find the right spot further down
+    insertSorted(s, element);
+
+    // After inserting 'element', put the bigger element back on top
+    s.push(topElement);
+}
+
+/**
+ * THE MANAGER: sortStack()
+ * Responsibility: Empty the stack to reach the simplest case (empty),
+ * then coordinate the 'Specialist' to rebuild it.
+ */
+void sortStack(stack<int>& s) {
+    // Base Case: An empty stack is already "sorted"
+    if (s.empty()) {
+        return;
+    }
+
+    // 1. Reduce: Take the top element out
+    int element = s.top();
+    s.pop();
+
+    // 2. Delegate: Tell the next call to sort the remaining stack
+    sortStack(s);
+
+    // 3. Self-Work: Now that the rest is sorted, insert the held element
+    insertSorted(s, element);
+}
+
+// Helper function to print and empty the stack
+void printStack(stack<int> s) {
+    while (!s.empty()) {
+        cout << s.top() << " ";
+        s.pop();
+    }
+    cout << endl;
+}
+
+int main() {
+    stack<int> s;
+    s.push(30);
+    s.push(-5);
+    s.push(18);
+    s.push(14);
+    s.push(-3);
+
+    cout << "Original Stack (top to bottom): 30 -5 18 14 -3" << endl;
+    
+    sortStack(s);
+
+    cout << "Sorted Stack (top to bottom): ";
+    printStack(s);
+
+    return 0;
+}
