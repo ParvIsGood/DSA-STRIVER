@@ -1,0 +1,66 @@
+/**
+ * @file GenerateParentheses.cpp
+ * @brief LeetCode 22: Generate Parentheses
+ * 
+ * @approach Backtracking / Recursive Depth-First Search (DFS)
+ * 
+ * @intuition Think of building the string character by character from left to right. At each step, 
+ *            you can safely add an opening parenthesis if you haven't used up the quota (n). You can 
+ *            only add a closing parenthesis if there is an unmatched opening parenthesis available 
+ *            to pair with it (i.e., close < open). This guarantees all generated paths are well-formed.
+ * 
+ * @complexity 
+ * - Time Complexity: O(4^n / sqrt(n)) - Bounded by the n-th Catalan number, which represents the number of valid combinations.
+ * - Space Complexity: O(n) - The maximum depth of the recursion stack is 2*n, proportional to the length of the string.
+ */
+
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+private:
+    /**
+     * @brief Helper function to recursively generate valid parenthesis combinations.
+     * 
+     * @param curr  The current string combination being built
+     * @param open  The count of opening parentheses used so far
+     * @param close The count of closing parentheses used so far
+     * @param n     The total pairs of parentheses required
+     * @param ans   The reference to the vector storing all valid combinations
+     */
+    void generator(string curr, int open, int close, int n, vector<string> &ans) {
+        // Base case: string length reaches 2*n, meaning a complete combination is formed
+        if (curr.length() == 2 * n) {
+            ans.push_back(curr);
+            return;
+        }
+
+        // Branch 1: If we have remaining opening brackets left to use, add '('
+        if (open < n) {
+            generator(curr + '(', open + 1, close, n, ans);
+        }
+        
+        // Branch 2: If closing brackets are fewer than opening ones, add ')' to maintain validity
+        if (close < open) {
+            generator(curr + ')', open, close + 1, n, ans);
+        }
+    }
+
+public:
+    /**
+     * @brief Core method to initiate the parenthesis generation process.
+     * 
+     * @param n The number of pairs of parentheses
+     * @return vector<string> All valid combinations of well-formed parentheses
+     */
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        
+        // Kick off the backtracking process starting with an empty state
+        generator("", 0, 0, n, ans);
+        
+        return ans;
+    }
+};
