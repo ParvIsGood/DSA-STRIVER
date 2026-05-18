@@ -1,0 +1,68 @@
+/**
+ * @file Solution.cpp
+ * @brief Problem: GeeksforGeeks - All Possible Strings / Subsequences
+ * 
+ * @approach Recursive Backtracking (Include / Exclude strategy)
+ * 
+ * @intuition 
+ * To generate all subsequences of a string, we make a binary choice for each character:
+ * either we exclude it from the current subsequence or we include it. By processing 
+ * every character from left to right recursively, we naturally explore all $2^n$ combinations.
+ * Once the end of the string is reached, the accumulated path is saved, and we sort lexicographically at the end.
+ * 
+ * @complexity
+ * - Time Complexity: $\mathcal{O}(2^n \cdot n + 2^n \log(2^n))$ where $n$ is the length of the string. 
+ *   There are $2^n$ subsequences, each taking $\mathcal{O}(n)$ time to copy/build, plus sorting the final result.
+ * - Space Complexity: $\mathcal{O}(2^n \cdot n)$ to store all generated subsequences in the output vector.
+ */
+
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+private:
+    /**
+     * @brief Helper function to recursively generate all subsequences.
+     * @param current The accumulated subsequence string so far.
+     * @param index   The current character index being processed.
+     * @param s       The original input string.
+     * @param ans     The reference vector to store all generated subsequences.
+     */
+    void generator(string current, int index, const string &s, vector<string> &ans) {
+        // Base case: if we have processed all characters, store the result and return
+        if (index == s.length()) {
+            ans.push_back(current);
+            return;
+        }
+
+        // Choice 1: Exclude the current character and move to the next index
+        generator(current, index + 1, s, ans);
+
+        // Choice 2: Include the current character and move to the next index
+        current += s[index];
+        generator(current, index + 1, s, ans);
+    }
+
+public:
+    /**
+     * @brief Generates and returns all possible subsequences sorted lexicographically.
+     * @param s The input string.
+     * @return A sorted vector containing all subsequences.
+     */
+    vector<string> AllPossibleStrings(string s) {
+        vector<string> ans;
+        string current = "";
+        int index      = 0;
+
+        // Kick off the recursive generation starting from index 0
+        generator(current, index, s, ans);
+
+        // Sort the subsequences in lexicographical order as required by the problem
+        sort(ans.begin(), ans.end());
+
+        return ans;
+    }
+};
