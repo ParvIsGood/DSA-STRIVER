@@ -1,0 +1,71 @@
+/**
+ * @file CombinationSum.cpp
+ * @brief LeetCode 39 - Combination Sum
+ * * @section Approach
+ * Backtracking (DFS) exploring choices of including or skipping each candidate.
+ * * @section Intuition
+ * At each step, we can either include the current candidate (and stay at the same index 
+ * to allow repetitions) or skip it to move to the next candidate. We branch out recursively, 
+ * accumulated sum acts as our state, and we backtrack by popping elements when a path hits 
+ * a dead-end or a valid combination. This explores the full state-space efficiently.
+ * * @section Complexity
+ * - Time Complexity: O(2^t * k) where t is the target value divided by the minimum candidate value, 
+ * and k is the average length of a combination. In the worst case, the recursion tree branches 
+ * two ways at each step up to a depth of t, and copying a valid combination takes O(k) time.
+ * - Space Complexity: O(t) where t is the maximum target depth, representing the recursion stack 
+ * and the temporary array storing the current combination.
+ */
+
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * @brief Recursive helper function to generate all unique combination sums.
+     */
+    void generator(vector<vector<int>>& ans, 
+                   int sum, 
+                   int index, 
+                   const vector<int>& candidates, 
+                   int target, 
+                   vector<int>& curr) {
+        
+        // Base Case: If the current combination hits the target sum, record it
+        if (sum == target) {
+            ans.push_back(curr);
+            return;
+        }
+        
+        // Base Case: Stop exploring if sum exceeds target or candidates are exhausted
+        if (sum > target || index == candidates.size()) {
+            return;
+        }
+
+        // Choice 1: Include the current element and allow it to be picked again
+        curr.push_back(candidates[index]);
+        generator(ans, sum + candidates[index], index, candidates, target, curr);
+        
+        // Backtrack: Remove the last added element before exploring the next branch
+        curr.pop_back();
+        
+        // Choice 2: Skip the current element entirely and move to the next index
+        generator(ans, sum, index + 1, candidates, target, curr);
+    }
+
+    /**
+     * @brief Finds all unique combinations in candidates where the numbers sum to target.
+     */
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans;
+        vector<int>         curr;
+        int                 sum   = 0;
+        int                 index = 0;
+
+        // Kick off the backtracking generator from the first index
+        generator(ans, sum, index, candidates, target, curr);
+        
+        return ans;
+    }
+};
