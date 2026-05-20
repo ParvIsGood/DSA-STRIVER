@@ -1,0 +1,44 @@
+/**
+ * @file SubsetsII.cpp
+ * @brief LeetCode 90 - Subsets II
+ * * Approach: Backtracking with duplicate elimination via sorting.
+ * * Intuition: 
+ * To generate all unique subsets from a list that may contain duplicates, we first sort the array. 
+ * This groups identical elements together, allowing us to easily skip duplicate branches during backtracking. 
+ * At each step, we include the current subset in our answer, then iterate through the remaining elements. 
+ * If a number is identical to the previous one in the current loop level, we skip it to avoid redundant subsets.
+ * * Complexity:
+ * - Time: O(n * 2^n) - There are 2^n possible subsets, and copying each subset to the answer takes up to O(n) time.
+ * - Space: O(n) - The recursion stack depth reaches at most O(n), and the temporary vector uses O(n) space.
+ */
+
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+private:
+    /**
+     * @brief Helper function to recursively generate unique subsets.
+     */
+    void generator(vector<int>& curr, int index, vector<vector<int>>& ans, const vector<int>& nums) {
+        // Record the current subset state before exploring further
+        ans.push_back(curr);
+
+        for (int i = index; i < nums.size(); ++i) {
+            // Skip duplicates at the same depth level to prevent duplicate subsets
+            if (i > index && nums[i] == nums[i - 1]) continue;
+
+            curr.push_back(nums[i]);       // Choose: add the current element
+            generator(curr, i + 1, ans, nums); // Explore: recurse for the next elements
+            curr.pop_back();               // Unchoose: backtrack for the next iteration
+        }
+    }
+
+public:
+    /**
+     * @brief Core function to find all unique subsets.
+     */
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector
