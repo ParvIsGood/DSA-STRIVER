@@ -1,0 +1,49 @@
+#include <vector>
+
+using namespace std;
+
+/**
+ * Problem: LeetCode 78 - Subsets
+ * Approach: Backtracking / Recursive Cascading
+ * Intuition: For each element in the input array, we have two choices: either exclude 
+ * it or include it in the current subset. By recursively exploring both 
+ * choices for every index and leveraging a backtracking step to restore the 
+ * state, we naturally generate all $2^n$ unique subsets.
+ * Complexity:
+ * - Time: O(n * 2^n) -> There are 2^n subsets, and copying each subset takes O(n) time.
+ * - Space: O(n) -> The recursion stack and the 'curr' vector both scale linearly with input size.
+ */
+class Solution {
+public:
+    void generator(vector<vector<int>>& ans, vector<int>& curr, int index, const vector<int>& nums) { 
+        // Base case: if we have processed all elements, store the current subset
+        if (index == nums.size()) {
+            ans.push_back(curr);
+            return;
+        }
+        
+        // Choice 1: Exclude the current element and move to the next index
+        generator(ans, curr, index + 1, nums);
+        
+        // Choice 2: Include the current element in the subset
+        curr.push_back(nums[index]);
+        
+        // Recursively explore subsets containing the current element
+        generator(ans, curr, index + 1, nums);
+        
+        // Backtrack: remove the element to restore state for previous recursive frames
+        curr.pop_back();
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> curr;
+        int index = 0;
+        
+        // Kick off the recursive generation starting from the first index
+        generator(ans, curr, index, nums);
+        
+        // Return the final list of all generated subsets
+        return ans;
+    }
+};
