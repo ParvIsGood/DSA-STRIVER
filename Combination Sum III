@@ -1,0 +1,64 @@
+/**
+ * @file CombinationSum3.cpp
+ * @brief LeetCode 216 - Combination Sum III
+ * * @approach Backtracking (Include/Exclude State Space Tree)
+ * * @details Intuition:
+ * The problem requires finding all unique combinations of k numbers that sum up to n, using numbers from 1 to 9.
+ * We use a recursive backtracking approach starting from index 1 up to 9. At each step, we have two choices:
+ * either we skip the current number (exclude) or we take the current number (include) and subtract it from our target n.
+ * We prune the recursion tree early if the current number exceeds the remaining target or if we go past number 9.
+ * * @complexity
+ * - Time Complexity: O(2^9) -> Constant time O(1) bound. We make at most 2 decisions for each of the 9 available digits.
+ * - Space Complexity: O(k) -> The recursion stack and the tracking vector 'curr' take space proportional to k (max depth 9).
+ */
+
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * @brief Helper function to recursively generate valid combinations.
+     * * @param curr  The current combination being built
+     * @param ans   The master list storing all valid combinations
+     * @param index The current digit being evaluated (1 through 9)
+     * @param k     The exact number of elements required in a valid combination
+     * @param n     The remaining target sum to achieve
+     */
+    void generator(vector<int> &curr, vector<vector<int>> &ans, int index, int k, int n) {
+        // Base Case: Prune the path if the current digit exceeds the remaining sum (and sum is non-zero)
+        if (index > n && n != 0) return;
+
+        // Base Case: If the combination reaches size k, check if target sum is perfectly met
+        if (curr.size() == k) {
+            if (n == 0) ans.push_back(curr); // Found a valid combination, store it
+            return;                          // Backtrack
+        }
+
+        // Base Case: Digits available are only from 1 to 9; stop if we hit 10
+        if (index == 10) return;
+
+        // Choice 1: Exclude the current digit and move to the next
+        generator(curr, ans, index + 1, k, n);
+
+        // Choice 2: Include the current digit
+        curr.push_back(index);                               // Take the current digit
+        generator(curr, ans, index + 1, k, n - index);       // Recurse with reduced sum
+        curr.pop_back();                                     // Clean up state (backtrack)
+    }
+
+    /**
+     * @brief Primary function to find all valid combinations.
+     */
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<int> curr;
+        vector<vector<int>> ans;
+        int index = 1;
+
+        // Kick off the recursive generation starting from digit 1
+        generator(curr, ans, index, k, n);
+        
+        return ans;
+    }
+};
