@@ -1,0 +1,67 @@
+/**
+ * Problem: LeetCode 79 - Word Search
+ * Approach: Backtracking via Depth-First Search (DFS) with in-place cell marking
+ *
+ * Intuition:
+ * Iterate through every cell on the grid as a potential starting character.
+ * From each matching cell, explore in four cardinal directions to match the next character in the target string.
+ * Mark visited cells in-place with a sentinel character ('*') to avoid revisiting them in the current path.
+ * Backtrack by restoring the original character if none of the 4-directional paths lead to a complete match.
+ *
+ * Complexity:
+ * - Time Complexity:  O(M * N * 3^L) where M x N is the board size and L is word length (3 branches per step after first).
+ * - Space Complexity: O(L) for the recursion call stack depth corresponding to the word length.
+ */
+
+#include <vector>
+#include <string>
+
+class Solution {
+private:
+    /**
+     * Recursively searches for the word in the board starting from (row, col).
+     */
+    bool check(std::vector<std::vector<char>>& board, const std::string& word, int idx, int row, int col) {
+        // Base case: entire word has been successfully matched
+        if (idx == word.size()) {
+            return true;
+        }
+
+        // Boundary checks and character mismatch validation
+        if (row < 0 || col < 0 || row >= board.size() || col >= board[0].size() || board[row][col] != word[idx]) {
+            return false;
+        }
+
+        // Temporarily mark the current cell as visited to prevent cycles in this path
+        char temp        = board[row][col];
+        board[row][col]  = '*';
+
+        // Explore all 4 adjacent directions (down, up, right, left)
+        bool found = check(board, word, idx + 1, row + 1, col) ||
+                     check(board, word, idx + 1, row - 1, col) ||
+                     check(board, word, idx + 1, row, col + 1) ||
+                     check(board, word, idx + 1, row, col - 1);
+
+        // Backtrack: restore the original character before returning
+        board[row][col] = temp;
+
+        return found;
+    }
+
+public:
+    bool exist(std::vector<std::vector<char>>& board, std::string word) {
+        int rows = board.size();
+        int cols = board[0].size();
+
+        // Scan every cell on the board as a potential start point
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (check(board, word, 0, i, j)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+};
