@@ -1,0 +1,62 @@
+/**
+ * Problem Name: N-Queens (LeetCode 51)
+ * Approach: Backtracking with O(1) safety checks using state arrays.
+ * Intuition: Instead of iterating to check if a Queen placement is safe, we can maintain 
+ *            three arrays to track the occupied rows, upper diagonals, and lower diagonals. 
+ *            This allows us to place a Queen, recurse for the next column, and backtrack 
+ *            efficiently when a dead-end is reached.
+ * Complexity:
+ *   - Time: O(N!) because we place N queens and branch out, though the search space is heavily pruned.
+ *   - Space: O(N) for the recursive call stack and the linear-sized state arrays (rows and diagonals).
+ */
+class Solution {
+public:
+    void solve(vector<vector<string>>& ans, vector<string>& board, vector<int>& leftrow, int n, vector<int>& upperd, vector<int>& lowerd, int col) {
+        // Base case: If we have successfully placed queens in all N columns
+        if (col == n) {
+            ans.push_back(board);
+            return;
+        }
+        
+        // Try placing a queen in each row of the current column
+        for (int row = 0; row < n; row++) {
+            
+            // Proceed only if the row and both intersecting diagonals are unoccupied
+            if (leftrow[row] == 0 && lowerd[row + col] == 0 && upperd[n - 1 + col - row] == 0) {
+                
+                // Place the queen and mark the row and corresponding diagonals as occupied
+                board[row][col]           = 'Q';
+                leftrow[row]              = 1;
+                lowerd[row + col]         = 1;
+                upperd[n - 1 + col - row] = 1;
+                
+                // Recurse to attempt placing a queen in the next column
+                solve(ans, board, leftrow, n, upperd, lowerd, col + 1);
+                
+                // Backtrack: Remove the queen and unmark the row and diagonals to explore other branches
+                board[row][col]           = '.';
+                leftrow[row]              = 0;
+                lowerd[row + col]         = 0;
+                upperd[n - 1 + col - row] = 0; 
+            }
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        // Track occupied horizontal rows
+        vector<int> leftrow(n, 0); 
+        
+        // Track occupied diagonals (sized 2N-1 to accommodate all possible diagonal sums/differences)
+        vector<int> upperd(2 * n - 1, 0); 
+        vector<int> lowerd(2 * n - 1, 0);
+        
+        // Final results container and properly sized NxN board initialized with empty cells
+        vector<vector<string>> ans;
+        vector<string>         board(n, string(n, '.'));
+        
+        // Begin the backtracking process starting from the 0th column
+        solve(ans, board, leftrow, n, upperd, lowerd, 0);
+        
+        return ans;
+    }
+};
